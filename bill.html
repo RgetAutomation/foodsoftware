@@ -1,0 +1,51 @@
+<!-- bill.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Bill Preview</title>
+</head>
+<body>
+  <h1>🧾 Bill Preview</h1>
+  <div id="billContainer">Loading bill...</div>
+  <button onclick="confirmPrint()">🖨️ Print</button>
+  <p id="printStatus"></p>
+
+  <script>
+  const { ipcRenderer } = require('electron');
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const previewContainer = document.getElementById("preview-container");
+
+    ipcRenderer.on('bill-data', (event, bill) => {
+      previewContainer.innerHTML = `
+        <h2>Bill for ${bill.customerName}</h2>
+        <p>Phone: ${bill.customerPhone}</p>
+        <p>Table: ${bill.tableNumber}</p>
+        <p>Date: ${new Date(bill.date).toLocaleString()}</p>
+        <table border="1" cellpadding="5" cellspacing="0" style="margin-top:10px; width:100%">
+          <thead>
+            <tr><th>Item</th><th>Category</th><th>Price</th><th>Qty</th><th>Remarks</th></tr>
+          </thead>
+          <tbody>
+            ${bill.items.map(item => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.category}</td>
+                <td>₹${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${item.remarks}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <h3>Total: ₹${bill.total}</h3>
+        <h4>Paid: ₹${bill.paidAmount}</h4>
+      `;
+    });
+  });
+</script>
+
+  <script src="bill.js"></script>
+</body>
+</html>

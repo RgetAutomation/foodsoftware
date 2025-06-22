@@ -1,0 +1,250 @@
+
+    body { 
+      font-family: Arial; 
+      background: #f2f2f2; padding: 20px; 
+    }
+    .form-section {
+       background: #fff; 
+       padding: 20px; 
+       border-radius: 8px; 
+       max-width: 100%; 
+       box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+
+      }
+    label { 
+      display: inline-block;
+       width: 150px;
+        margin: 10px 0 5px;
+       }
+    input, select, button { 
+      padding: 8px;
+       margin-bottom: 10px; 
+       width: 250px; 
+      }
+    button {
+       background: #28a745; 
+       border: none;
+        color: white; 
+        cursor: pointer; 
+      }
+    button:hover { 
+      background: #218838; 
+    }
+    #addStatus {
+       font-weight: bold;
+        margin-top: 10px;
+       }
+    table {
+       margin-top: 30px; width: 100%;
+        border-collapse: collapse;
+       }
+    th, td { 
+      border: 1px solid #aaa;
+       padding: 8px;
+        text-align: center; 
+      }
+    th { 
+      background: #eaeaea; 
+    }
+    .action-buttons button {
+       background: #007bff; 
+       color: white; 
+      }
+    .action-buttons button.delete {
+       background: #dc3545;
+       }
+    a 
+    { display: inline-block; 
+      margin-top: 15px;
+       color: #007bff; 
+      }
+
+    .input-row {
+         display: flex;
+       flex-direction: row;
+       justify-content: space-between;
+       align-items: center;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.button-row {
+         display: flex;
+       flex-direction: row;
+       justify-content: center;
+       gap: 20px;
+       align-items: center;
+       flex-wrap: wrap;
+       margin-top: 10px;
+       margin-bottom: 10px;
+       width: 100%;
+       box-sizing: border-box;
+}
+
+button.cancel {
+  background: #6c757d;
+}
+
+button.cancel:hover {
+  background: #5a6268;
+}
+#formTitle{
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  
+}
+#multiEntryTable input, #multiEntryTable select {
+  width: 100%;
+  padding: 6px;
+}
+
+button.delete-row {
+  background: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button.delete-row:hover {
+  background: #c82333;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  margin: 0;
+  padding: 20px;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #eaeaea;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button.delete-row {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.add-row {
+  background-color: #007bff;
+  color: white;
+}
+
+button.save-all {
+  background-color: #28a745;
+  color: white;
+  margin-left: 10px;
+}
+
+.button-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .form-section {
+    padding: 15px;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #f9f9f9;
+  }
+
+  td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
+  }
+}
+

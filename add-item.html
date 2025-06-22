@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Food Items</title>
+ <link rel="stylesheet" href="additem.css">
+</head>
+<body>
+
+<div class="form-section">
+  <h2 id="formTitle">Add Multiple Food Items</h2>
+
+  <table id="multiEntryTable">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Category</th>
+        <th>Price (₹)</th>
+        <th>🛠️</th>
+      </tr>
+    </thead>
+    <tbody id="multiEntryBody">
+      <!-- Entry rows will go here -->
+    </tbody>
+  </table>
+<div class="button-row">
+  <button onclick="addNewRow()">➕ Add Row</button>
+  <button onclick="submitAllItems()">💾 Save All</button>
+</div>
+  <p id="addStatus"></p>
+  <a href="index.html">← Back to Billing</a>
+</div>
+
+
+
+<table id="itemsTable">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Category</th>
+      <th>Price (₹)</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="itemsBody"></tbody>
+</table>
+
+<script>
+function loadItems() {
+  fetch("http://localhost:5000/get-items")
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.getElementById("itemsBody");
+      tbody.innerHTML = "";
+      data.forEach(item => {
+        const row = `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.category}</td>
+            <td>${item.price.toFixed(2)}</td>
+            <td class="action-buttons" style = 'width : 20%'>
+              <button style = 'width : 100%' onclick="editItem(${item.id}, '${item.name}', '${item.category}', ${item.price})">✏️ Edit</button>
+              <button style = 'width : 100%' class="delete" onclick="deleteItem(${item.id})">🗑️ Delete</button>
+            </td>
+          </tr>`;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+    });
+}
+
+function saveItem() {
+  const id = document.getElementById("editItemId").value;
+  const name = document.getElementById("newItemName").value.trim();
+  const category = document.getElementById("newItemCategory").value;
+  const price = parseFloat(document.getElementById("newItemPrice").value);
+  const status = document.getElementById("addStatus");
+
+  if (!name || isNaN(price) || price <= 0) {
+    status.textContent = "❌ Please enter valid item name and price.";
+    status.style.color = "red";
+    return;
+  }
+
+  const url = id ? `http://localhost:5000/edit-item/${id}` : "http://localhost:5000/add-item";
+  const method = id ? "PUT" : "POST";
+
+  fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, category, price })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      status.textContent = id ? "✅ Item updated!" : "✅ Item saved!";
+      status.style.color = "green";
+      resetForm();
+      loadItems();
+    } else {
+      status.textContent = "❌ Error: " + (data.error || "Unknown error");
+      status.style.color = "red";
+    }
+  })
+  .catch(err => {
+    status.textContent = "❌ Backend error: " + err.message;
+    status.style.color = "red";
+  });
+}
+
+function editItem(id, name, category, price) {
+  document.getElementById("editItemId").value = id;
+  document.getElementById("newItemName").value = name;
+  document.getElementById("newItemCategory").value = category;
+  document.getElementById("newItemPrice").value = price;
+  document.getElementById("formTitle").textContent = "Edit Food Item";
+}
+
+function deleteItem(id) {
+  if (!confirm("Are you sure you want to delete this item?")) return;
+  fetch(`http://localhost:5000/delete-item/${id}`, { method: "DELETE" })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) loadItems();
+      else alert("❌ Failed to delete item.");
+    });
+}
+
+function resetForm() {
+  document.getElementById("editItemId").value = "";
+  document.getElementById("newItemName").value = "";
+  document.getElementById("newItemCategory").value = "Veg";
+  document.getElementById("newItemPrice").value = "";
+  document.getElementById("formTitle").textContent = "Add New Food Item";
+  document.getElementById("addStatus").textContent = "";
+}
+
+loadItems();
+
+function addNewRow() {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" class="itemName" placeholder="Name"></td>
+    <td style = 'width : 30%'>
+      <select class="itemCategory">
+        <option value="Veg">Veg</option>
+        <option value="Non-Veg">Non-Veg</option>
+        <option value="Sweet">Sweet</option>
+      </select>
+    </td>
+    <td><input type="number"  class="itemPrice" placeholder="Price"></td>
+    <td style = 'width : 10%'><button class="delete-row " style = 'width : 100%' onclick="this.closest('tr').remove()">🗑️</button></td>
+  `;
+  document.getElementById("multiEntryBody").appendChild(row);
+}
+function submitAllItems() {
+  const rows = document.querySelectorAll("#multiEntryBody tr");
+  const items = [];
+  const status = document.getElementById("addStatus");
+
+  rows.forEach(row => {
+    const name = row.querySelector(".itemName").value.trim();
+    const category = row.querySelector(".itemCategory").value;
+    const price = parseFloat(row.querySelector(".itemPrice").value);
+
+    if (name && !isNaN(price) && price > 0) {
+      items.push({ name, category, price });
+    }
+  });
+
+  if (items.length === 0) {
+    status.textContent = "❌ Please fill at least one valid item.";
+    status.style.color = "red";
+    return;
+  }
+
+  // Save one by one (or you can create a /bulk-add route later)
+  let savedCount = 0;
+  items.forEach((item, i) => {
+    fetch("http://localhost:5000/add-item", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(item)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        savedCount++;
+        if (savedCount === items.length) {
+          status.textContent = `✅ All ${items.length} items saved successfully!`;
+          status.style.color = "green";
+          document.getElementById("multiEntryBody").innerHTML = "";
+          loadItems(); // Refresh list
+        }
+      } else {
+        status.textContent = `❌ Failed to save some items.`;
+        status.style.color = "red";
+      }
+    })
+    .catch(err => {
+      status.textContent = "❌ Server error: " + err.message;
+      status.style.color = "red";
+    });
+  });
+}
+</script>
+
+</body>
+</html>
